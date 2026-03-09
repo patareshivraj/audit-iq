@@ -19,7 +19,7 @@
   <body>
     <div class="app-shell" id="appShell">
       <!-- ════════════════ SIDEBAR ════════════════ -->
-      <aside class="sidebar" id="sidebar">
+      <aside class="sidebar" id="sidebar" data-collapsed="false">
         <div class="sidebar-brand">
           <div class="brand-icon">
             <svg
@@ -33,10 +33,15 @@
               />
             </svg>
           </div>
-          <div>
+          <div class="brand-text">
             <div class="brand-name">AuditIQ</div>
             <div class="brand-sub">Intelligence Platform</div>
           </div>
+          <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebarCollapse()" aria-label="Toggle sidebar" title="Toggle Sidebar (Ctrl+B)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="toggle-icon">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
         </div>
 
         <!-- Stats bar -->
@@ -160,7 +165,7 @@
                   Extract Audit Intelligence<br />Instantly
                 </h1>
                 <p class="hero-sub">
-                  Enter any Indian company — we find the annual report, download
+                  Enter any Indian company &mdash; we find the annual report, download
                   it, analyse it, and extract the complete auditor's opinion
                   automatically.
                 </p>

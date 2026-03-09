@@ -53,12 +53,24 @@ document.addEventListener('DOMContentLoaded', () => {
     loadHistory();
     loadStats();
 
+    // Init Sidebar Collapse State
+    const savedSidebarState = localStorage.getItem('auditIqSidebarCollapsed');
+    if (savedSidebarState === 'true') {
+        document.getElementById('sidebar').dataset.collapsed = 'true';
+    }
+
     // Keyboard bindings
     document.getElementById('searchInput').addEventListener('keydown', e => {
         if (e.key === 'Enter' && !state.analyzing) startAnalysis();
     });
     document.getElementById('qaInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') askQuestion();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+            e.preventDefault();
+            toggleSidebarCollapse();
+        }
     });
 });
 
@@ -103,6 +115,13 @@ function switchView(view) {
 
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
+}
+
+function toggleSidebarCollapse() {
+    const sidebar = document.getElementById('sidebar');
+    const isCollapsed = sidebar.dataset.collapsed === 'true';
+    sidebar.dataset.collapsed = String(!isCollapsed);
+    localStorage.setItem('auditIqSidebarCollapsed', String(!isCollapsed));
 }
 
 
