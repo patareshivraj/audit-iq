@@ -57,10 +57,11 @@ audit_platform/
 
 ### 1️⃣ Installation
 
-1. Navigate to the platform directory:
+1. Clone the repository:
 
    ```powershell
-   cd "d:\audit_resport_platform"
+   git clone https://github.com/ShivrajPatare/audit-iq.git
+   cd audit-iq
    ```
 
 2. (Optional but recommended) Create and activate a virtual environment:
@@ -76,13 +77,20 @@ audit_platform/
    ```
    _Note: On the first run, the system will automatically download the local embedding model (`all-MiniLM-L6-v2`) via HuggingFace's `sentence-transformers`._
 
-### 2️⃣ Running the Server
+### 2️⃣ Configuration
 
-1. Set your Groq API key in the environment variables:
+1. Copy the example `.env` file to set up your environment variables:
 
    ```powershell
-   $env:GROQ_API_KEY = "gsk_your_api_key_here"
+   copy .env.example .env
    ```
+
+2. Open `.env` and configure your **Groq API key**:
+   ```
+   GROQ_API_KEY=gsk_your_api_key_here
+   ```
+
+### 3️⃣ Running the Server
 
 2. Start the Flask server:
 
