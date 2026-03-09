@@ -54,7 +54,7 @@ MAX_CONTEXT_CHARS: int = 15_000  # characters fed to LLM per extraction call
 SCREENER_BASE_URL: str = "https://www.screener.in"
 SCRAPER_TIMEOUT:   int = 20     # seconds, page fetch
 DOWNLOAD_TIMEOUT:  int = 60     # seconds, PDF download
-MAX_REPORTS:       int = 5      # number of links to collect per company
+MAX_REPORTS:       int = 1      # only fetch the most-recent annual report
 
 
 # ── Input validation ──────────────────────────────────────────────────────────

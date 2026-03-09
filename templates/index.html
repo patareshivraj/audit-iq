@@ -238,41 +238,6 @@
                     </button>
                   </div>
                 </div>
-
-                <!-- Features grid -->
-                <div class="features-grid">
-                  <div class="feature-card">
-                    <div class="feature-icon">🔎</div>
-                    <div class="feature-text">
-                      <strong>Auto-Search</strong>
-                      <span
-                        >Finds the right company on Screener.in
-                        automatically</span
-                      >
-                    </div>
-                  </div>
-                  <div class="feature-card">
-                    <div class="feature-icon">📄</div>
-                    <div class="feature-text">
-                      <strong>PDF Ingestion</strong>
-                      <span>300+ page annual reports parsed in seconds</span>
-                    </div>
-                  </div>
-                  <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <div class="feature-text">
-                      <strong>AI Extraction</strong>
-                      <span>Groq LLM extracts structured audit data</span>
-                    </div>
-                  </div>
-                  <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <div class="feature-text">
-                      <strong>Follow-up Q&amp;A</strong>
-                      <span>Ask any question about the analysed report</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </section>
 
@@ -468,18 +433,34 @@
           <div class="view" id="viewHistory" hidden>
             <div class="view-header">
               <h2>Analysis History</h2>
-              <button class="action-btn" onclick="loadHistory()">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <polyline points="23 4 23 10 17 10" />
-                  <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
-                </svg>
-                Refresh
-              </button>
+              <div class="view-header-actions">
+                <button class="action-btn" onclick="loadHistory()">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="23 4 23 10 17 10" />
+                    <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
+                  </svg>
+                  Refresh
+                </button>
+                <button class="action-btn danger" onclick="clearHistory()" id="clearHistoryBtn">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                    <path d="M10 11v6M14 11v6" />
+                    <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                  </svg>
+                  Clear All
+                </button>
+              </div>
             </div>
             <div id="historyTableWrap"></div>
           </div>

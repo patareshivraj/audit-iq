@@ -13,7 +13,10 @@ from pathlib import Path
 from urllib.parse import quote, urljoin
 
 import requests
+import urllib3
 from bs4 import BeautifulSoup
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import config
 
@@ -53,6 +56,7 @@ class ScreenerScraper:
 
     def __init__(self):
         self.session = requests.Session()
+        self.session.verify = False
         self.session.headers.update(HEADERS)
 
     def search_company(self, query: str) -> dict:

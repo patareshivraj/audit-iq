@@ -1000,6 +1000,23 @@ body::before {
   filter: brightness(1.1);
 }
 
+.action-btn.danger {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--c-red);
+}
+
+.action-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: var(--c-red);
+}
+
+.view-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Tab bar */
 .tab-bar {
   display: flex;

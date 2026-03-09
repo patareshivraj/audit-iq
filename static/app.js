@@ -918,3 +918,30 @@ function formatDate(iso) {
         }).format(new Date(iso));
     } catch { return iso.slice(0, 10); }
 }
+
+
+// ── Clear History ─────────────────────────────────────────────────────────────
+async function clearHistory() {
+    if (!confirm('Delete ALL analysis history? This cannot be undone.')) return;
+
+    const btn = document.getElementById('clearHistoryBtn');
+    if (btn) btn.disabled = true;
+
+    try {
+        const res  = await fetch('/api/history', { method: 'DELETE' });
+        const json = await res.json();
+        if (json.status === 'success') {
+            _historyData = [];
+            renderHistorySidebar([]);
+            renderHistoryTable();
+            loadStats();
+            showToast(`Cleared ${json.deleted} record(s)`, 'success');
+        } else {
+            showToast('Could not clear history', 'error');
+        }
+    } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}

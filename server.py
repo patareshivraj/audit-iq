@@ -267,6 +267,20 @@ def get_analysis(analysis_id: int):
         return _json_error(str(exc), 500)
 
 
+@app.route("/api/history", methods=["DELETE"])
+def clear_history():
+    """Delete all analysis history records."""
+    try:
+        pipeline = get_pipeline()
+        deleted  = pipeline.db.clear_all()
+        return jsonify({"status": "success", "deleted": deleted})
+    except EnvironmentError as exc:
+        return _json_error(str(exc), 503)
+    except Exception as exc:
+        logger.exception("Clear history failed")
+        return _json_error(str(exc), 500)
+
+
 # ── Error handlers ────────────────────────────────────────────────────────────
 
 @app.errorhandler(404)

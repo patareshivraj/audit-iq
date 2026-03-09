@@ -140,3 +140,11 @@ class Database:
                 "SELECT COUNT(DISTINCT company_name) FROM analyses"
             ).fetchone()[0]
         return {"total": total, "complete": complete, "unique_companies": unique}
+
+    def clear_all(self) -> int:
+        """Delete all analyses. Returns number of rows deleted."""
+        with self._get_conn() as conn:
+            cur = conn.execute("DELETE FROM analyses")
+            conn.commit()
+        logger.info("Cleared all analyses (%d rows deleted)", cur.rowcount)
+        return cur.rowcount
