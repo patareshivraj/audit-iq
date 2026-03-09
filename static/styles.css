@@ -672,6 +672,14 @@ body::before {
   margin-bottom: 18px;
 }
 
+.text-gradient {
+  background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+}
+
 .hero-sub {
   font-size: 16px;
   color: var(--c-text2);
