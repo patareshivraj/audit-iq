@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+env/
+venv/
+.venv/
+ENV/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Data directory (runtime generated)
+data/
+!data/.gitkeep
+
+# Models (large binary)
+models/
+
+# Result files (test artifacts)
+result.json
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
