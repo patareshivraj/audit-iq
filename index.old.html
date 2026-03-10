@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audit Intelligence Platform</title>
+    <meta
+      name="description"
+      content="AI-powered Independent Auditor's Report extraction from Indian corporate annual reports"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell" id="appShell">
+      <!-- ════════════════ SIDEBAR ════════════════ -->
+      <aside class="sidebar" id="sidebar" data-collapsed="false">
+        <div class="sidebar-brand">
+          <div class="brand-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-name" style="font-size: 20px;">AuditIQ</div>
+          </div>
+          <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebarCollapse()" aria-label="Toggle sidebar" title="Toggle Sidebar (Ctrl+B)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="toggle-icon">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Stats bar -->
+        <div class="stats-bar" id="statsBar">
+          <div class="stat-pill" id="statTotal">
+            <span class="stat-n" id="statTotalN">—</span>
+            <span class="stat-l">Total</span>
+          </div>
+          <div class="stat-pill" id="statUnique">
+            <span class="stat-n" id="statUniqueN">—</span>
+            <span class="stat-l">Companies</span>
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="sidebar-nav">
+          <button
+            class="nav-btn active"
+            id="navAnalyze"
+            onclick="switchView('analyze')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            Analyze
+          </button>
+          <button
+            class="nav-btn"
+            id="navHistory"
+            onclick="switchView('history')"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            History
+          </button>
+        </nav>
+
+        <!-- History list -->
+        <div class="history-scroll" id="historyScroll">
+          <div class="history-section-label">Recent Analyses</div>
+          <div id="historyList">
+            <div class="history-empty">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                />
+              </svg>
+              No analyses yet
+            </div>
+          </div>
+        </div>
+
+        <!-- System status -->
+        <div class="sidebar-footer">
+          <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle Light/Dark Mode" aria-label="Toggle theme">
+            <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+            <span class="theme-label" id="themeLabel">Light Mode</span>
+          </button>
+          <div class="status-indicator" id="statusIndicator">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="statusText">Checking...</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ════════════════ MAIN ════════════════ -->
+      <main class="main-area">
+        <!-- ── CONTENT VIEWS ── -->
+        <div class="content-wrap">
+          <!-- ════ VIEW: ANALYZE ════ -->
+          <div class="view active" id="viewAnalyze">
+            <!-- Hero / Search -->
+            <section class="hero-section" id="heroSection">
+              <div class="hero-ambient"></div>
+              <div class="hero-content">
+                <div class="hero-badge">
+                  <span class="badge-dot"></span>
+                  AI-Powered · Indian Auditing Standards
+                </div>
+                <h1 class="hero-title">
+                  Extract Audit Intelligence<br />
+                  <span class="text-gradient">Instantly</span>
+                </h1>
+                <p class="hero-sub">
+                  Enter any Indian company &mdash; we find the annual report, download
+                  it, analyse it, and extract the complete auditor's opinion
+                  automatically.
+                </p>
+
+                <div class="search-wrap" id="searchWrap">
+                  <div class="search-field" id="searchField">
+                    <div class="search-icon">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      id="searchInput"
+                      class="search-input"
+                      placeholder="Company name or ticker (e.g. TCS, Infosys, Reliance)"
+                      autocomplete="off"
+                      spellcheck="false"
+                      maxlength="120"
+                      aria-label="Company name"
+                    />
+                    <button
+                      class="analyze-btn"
+                      id="analyzeBtn"
+                      onclick="startAnalysis()"
+                    >
+                      <span class="btn-label">Analyze</span>
+                      <span class="btn-spinner" hidden>
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                          class="spin-svg"
+                        >
+                          <path
+                            d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+
+                  <div class="quick-searches">
+                    <span class="qs-label">Try:</span>
+                    <button class="qs-chip" onclick="quickSearch('TCS')">
+                      TCS
+                    </button>
+                    <button class="qs-chip" onclick="quickSearch('Infosys')">
+                      Infosys
+                    </button>
+                    <button
+                      class="qs-chip"
+                      onclick="quickSearch('Reliance Industries')"
+                    >
+                      Reliance
+                    </button>
+                    <button class="qs-chip" onclick="quickSearch('HDFC Bank')">
+                      HDFC Bank
+                    </button>
+                    <button class="qs-chip" onclick="quickSearch('Wipro')">
+                      Wipro
+                    </button>
+                    <button
+                      class="qs-chip"
+                      onclick="quickSearch('Asian Paints')"
+                    >
+                      Asian Paints
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Error banner -->
+            <div class="alert alert-error" id="errorBanner" hidden>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span id="errorMsg">Error</span>
+              <button class="alert-close" onclick="hideError()">×</button>
+            </div>
+
+            <!-- Progress pipeline -->
+            <section class="pipeline-section" id="pipelineSection" hidden>
+              <div class="pipeline-card">
+                <div class="pipeline-header">
+                  <div class="pipeline-company" id="pipelineCompany">
+                    Analyzing…
+                  </div>
+                  <div class="pipeline-eta" id="pipelineEta">
+                    Estimating time…
+                  </div>
+                </div>
+                <div class="pipeline-progress-bar">
+                  <div class="pipeline-bar-fill" id="pipelineBarFill"></div>
+                </div>
+                <div class="pipeline-steps" id="pipelineSteps"></div>
+              </div>
+            </section>
+
+            <!-- Results -->
+            <section class="results-section" id="resultsSection" hidden>
+              <!-- Header -->
+              <div class="results-header">
+                <div>
+                  <h2 class="results-company" id="resultsCompany">Company</h2>
+                  <div class="results-meta" id="resultsMeta"></div>
+                </div>
+                <div class="results-actions">
+                  <button
+                    class="action-btn"
+                    onclick="copyJson()"
+                    id="copyBtn"
+                    title="Copy JSON"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path
+                        d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"
+                      />
+                    </svg>
+                    Copy JSON
+                  </button>
+                  <button
+                    class="action-btn"
+                    onclick="downloadJson()"
+                    title="Download JSON"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download
+                  </button>
+                  <button class="action-btn primary" onclick="resetView()">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <polyline points="19 12 12 5 5 12" />
+                    </svg>
+                    New Search
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tab bar -->
+              <div class="tab-bar">
+                <button
+                  class="tab-btn active"
+                  data-tab="overview"
+                  onclick="switchTab('overview')"
+                >
+                  Overview
+                </button>
+                <button
+                  class="tab-btn"
+                  data-tab="kam"
+                  onclick="switchTab('kam')"
+                >
+                  Key Audit Matters
+                </button>
+                <button
+                  class="tab-btn"
+                  data-tab="details"
+                  onclick="switchTab('details')"
+                >
+                  Detailed Findings
+                </button>
+                <button
+                  class="tab-btn"
+                  data-tab="signature"
+                  onclick="switchTab('signature')"
+                >
+                  Signature Block
+                </button>
+                <button
+                  class="tab-btn"
+                  data-tab="json"
+                  onclick="switchTab('json')"
+                >
+                  Raw JSON
+                </button>
+              </div>
+
+              <!-- Tab panels -->
+              <div id="tabOverview" class="tab-panel active"></div>
+              <div id="tabKam" class="tab-panel" hidden></div>
+              <div id="tabDetails" class="tab-panel" hidden></div>
+              <div id="tabSignature" class="tab-panel" hidden></div>
+              <div id="tabJson" class="tab-panel json-panel" hidden>
+                <pre class="json-pre" id="jsonPre"></pre>
+              </div>
+            </section>
+
+            <!-- Q&A -->
+            <section class="qa-section" id="qaSection" hidden>
+              <div class="qa-header">
+                <h3>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+                    />
+                  </svg>
+                  Ask Follow-up Questions
+                </h3>
+                <span class="qa-hint"
+                  >Answers come directly from the analysed PDF</span
+                >
+              </div>
+              <div class="qa-messages" id="qaMessages"></div>
+              <div class="qa-input-row">
+                <input
+                  type="text"
+                  id="qaInput"
+                  class="qa-input"
+                  placeholder="e.g. What were the Key Audit Matters? Was there any going concern risk?"
+                  maxlength="2000"
+                  aria-label="Follow-up question"
+                />
+                <button class="qa-send" id="qaSend" onclick="askQuestion()">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <!-- ════ VIEW: HISTORY ════ -->
+          <div class="view" id="viewHistory" hidden>
+            <div class="view-header">
+              <h2>Analysis History</h2>
+              <div class="view-header-actions">
+                <button class="action-btn" onclick="loadHistory()">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="23 4 23 10 17 10" />
+                    <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
+                  </svg>
+                  Refresh
+                </button>
+                <button class="action-btn danger" onclick="clearHistory()" id="clearHistoryBtn">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                    <path d="M10 11v6M14 11v6" />
+                    <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                  </svg>
+                  Clear All
+                </button>
+              </div>
+            </div>
+            <div id="historyTableWrap"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
