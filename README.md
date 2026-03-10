@@ -18,7 +18,7 @@ By combining web scraping, RAG (Retrieval-Augmented Generation), and LLM-powered
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture!!!
 
 The platform is designed with clear separation of concerns across multiple modules:
 
